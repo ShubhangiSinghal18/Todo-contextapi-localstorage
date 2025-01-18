@@ -5,7 +5,9 @@ import { TodoProvider } from './context/TodoContext';
 import { TodoForm, TodoItem } from './components';
 
 function App() {
-const [todos, settodos] = useState([])
+const [todos, settodos] = useState(()=>{
+  return JSON.parse(localStorage.getItem("todos")) || [];
+})
 const addTodo= (todo) =>{
   // settodos(todo)   //will delete all the existing values and initialize todo to this new value
   settodos((prev)=>[{id:Date.now(),...todo},...prev])
@@ -20,16 +22,20 @@ const toggleComplete=(id) =>{
 settodos((prev)=>prev.map((prevTodo)=> prevTodo.id===id?{...prevTodo,completed:!prevTodo.completed}:prevTodo))
 }
 
-useEffect(() => {
-  const todos = JSON.parse(localStorage.getItem("todos"))
+// useEffect(() => {
+//   const todos = JSON.parse(localStorage.getItem("todos"))
 
-  if(todos && todos.lenth >0) {
-      settodos(todos)
+//   if(todos && todos.length >0) {
+//       settodos(todos)
+//   }
+// }, [])
+
+useEffect(() => {
+  console.log("Todos updated:", todos); 
+  if(todos.length>0){
+    localStorage.setItem("todos" , JSON.stringify(todos))
   }
-}, [])
-
-useEffect(() => {
-  localStorage.setItem("todos" , JSON.stringify(todos))
+  
 }, [todos])
 
 
